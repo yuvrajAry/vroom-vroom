@@ -1,182 +1,35 @@
+VROOM VROOM is a sophisticated command-line application that faithfully emulates the experience of renting a vehicle. This user-friendly software allows customers to effortlessly browse a wide selection of available cars, handpick their preferred vehicle, and instantly determine the total cost of their rental. Developed using C++, this project leverages the principles of object-oriented programming, including advanced techniques such as polymorphism, inheritance, and operator overloading, to deliver a seamless and intuitive user experience.
 
-#include <iostream>
-#include <string>
-#include <vector>
 
-using namespace std;
+Key Features
 
-class Car {
-public:
-    Car(string make, string model, int year, int seats, double dailyRate)
-        : make(make), model(model), year(year), seats(seats), dailyRate(dailyRate) {}
+The Rental Car System offers the following key features:
 
-    virtual string getType() const = 0;
+1. Diverse Car Selection: Users can choose from different car types, including Economy, Luxury, SUVs, and Six Seaters, catering to various needs.
 
-    string getMake() const { return make; }
-    string getModel() const { return model; }
-    int getYear() const { return year; }
-    int getSeats() const { return seats; }
-    double getDailyRate() const { return dailyRate; }
+2. Effective Resource Management: The system maintains a list of available cars and their details, ensuring efficient resource usage.
 
-    virtual void display() const {
-        cout << "Make: " << make <<endl;
-        cout << "Model: " << model <<endl;
-        cout << "Year: " << year <<endl;
-        cout << "Seats: " << seats <<endl;
-        cout << "Daily Rate: $" << dailyRate <<endl;
-    }
+3. Accurate Monetary Handling: The system calculates the total cost of the rental, taking into account the selected car type and the duration of the rental. It also displays the total cost to the user.
 
-    friend ostream& operator<<(ostream& out, const Car& car) {
-        out << "Make: " << car.make <<endl;
-        out << "Model: " << car.model <<endl;
-        out << "Year: " << car.year <<endl;
-        out << "Seats: " << car.seats <<endl;
-        out << "Daily Rate: $" << car.dailyRate <<endl;
-        return out;
-    }
+Key Object-Oriented Concepts Demonstrated
 
-private:
-    string make;
-    string model;
-    int year;
-    int seats;
-    double dailyRate;
-};
+The project effectively demonstrates several important object-oriented concepts:
 
-class EconomyCar : public Car {
-public:
-    EconomyCar(string make, string model, int year)
-        : Car(make, model, year, 5, 40.0) {}
+1.Abstraction: The project demonstrates abstraction by defining the base class Car as an abstract class, making it impossible to create instances of this class. This enforces a clear separation between the common characteristics of cars and the specific details of individual car types.
 
-    string getType() const override { return "Economy"; }
-};
+2. Polymorphism: The base class `Car` serves as an abstract base class, and its derived classes override the `getType` function to provide specific details for each car type. This allows different car types to be treated uniformly.
 
-class LuxuryCar : public Car {
-public:
-    LuxuryCar(string make, string model, int year)
-        : Car(make, model, year, 6, 100.0) {}
+3. Friend Function: Two friend functions, `operator<<` and `rentCar`, are defined. These functions are not members of the `Car` class but have access to its private members. The `operator<<` function is used to display car details, while the `rentCar` function is responsible for renting a car.
 
-    string getType() const override { return "Luxury"; }
-};
+4. Operator Overloading: The `operator<<` function overloads the `<<` operator for displaying car details. This demonstrates the use of operator overloading in the project.
 
-class SUV : public Car {
-public:
-    SUV(string make, string model, int year)
-        : Car(make, model, year, 7, 80.0) {}
+5. Inheritance: The derived classes, such as `EconomyCar`, `LuxuryCar`, `SUV`, and `SixSeater`, inherit from the base class `Car`. They inherit data members and overridden functions, promoting code reusability.
 
-    string getType() const override { return "SUV"; }
-};
-
-class SixSeater : public Car {
-public:
-    SixSeater(string make, string model, int year)
-        : Car(make, model, year, 6, 70.0) {}
-
-    string getType() const override { return "Six Seater"; }
-};
-
-class RentalSystem {
-public:
-    void addCar(Car* car) {
-        if (carCount < MaxCars) {
-            cars[carCount++] = car;
-        }
-        else {
-            cout << "Cannot add more cars. The system is full." << endl;
-        }
-    }
-
-    void displayCars() {
-        for (int i = 0; i < carCount; i++) {
-            cout << *cars[i];
-            cout << "Type: " << cars[i]->getType() << "\n\n";
-        }
-    }
-
-Car* rentCar(int seats, int days) {
-    if (seats < 5) {
-        cout << "No cars available with fewer than 5 seats." << endl;
-        return nullptr;
-    }
-    vector<Car*> matchingCars;
-
-    for (int i = 0; i < carCount; i++) {
-        if (cars[i]->getSeats() >= seats) {
-            matchingCars.push_back(cars[i]);
-        }
-    }
-
-    if (matchingCars.empty()) {
-        cout << "No cars available with the requested number of seats." << endl;
-        return nullptr;
-    } else {
-        cout << "Available " << seats << " seater cars:\n";
-        for (int i = 0; i < matchingCars.size(); i++) {
-            cout << i + 1 << ". " << matchingCars[i]->getType() << " " << matchingCars[i]->getMake() << " " << matchingCars[i]->getModel() << endl;
-        }
-
-        int choice;
-        cout << "Enter the number of the car you want to rent: ";
-        cin >> choice;
-
-        if (choice >= 1 && choice <= matchingCars.size()) {
-            Car* chosenCar = matchingCars[choice - 1];
-            cout << "You have rented a " << chosenCar->getType() << " car for " << days << " days." << endl;
-            cout << "Details of the rented car:\n";
-            cout << *chosenCar;
-            return chosenCar;
-        } else {
-            cout << "Invalid choice. Rental canceled." << endl;
-            return nullptr;
-        }
-    }
-}
+6.. Encapsulation: Data members in the `Car` class, such as `make`, `model`, `year`, `seats`, and `dailyRate`, are encapsulated as private. Access is provided through getter functions, ensuring data 
+security.
+7.Method Overriding: Derived car type classes override methods from the base class to supply specific details tailored to each car type.
 
 
 
-private:
-    static const int MaxCars = 20;
-    Car* cars[MaxCars] = {nullptr};
-    int carCount = 0;
-};
 
-int main() {
-    RentalSystem rentalSystem;
-
-    rentalSystem.addCar(new EconomyCar("Toyota", "Corolla", 2022));
-    rentalSystem.addCar(new LuxuryCar("Mercedes", "E-Class", 2022));
-    rentalSystem.addCar(new SUV("Ford", "Explorer", 2022));
-    rentalSystem.addCar(new SixSeater("Honda", "Odyssey", 2022));
-    rentalSystem.addCar(new SixSeater("Honda", "BR-V", 2022));
-    rentalSystem.addCar(new SixSeater("SKODA", "SLAVIA", 2022));
-    rentalSystem.addCar(new SixSeater("FORD", "GT", 2022));
-    rentalSystem.addCar(new SUV("Ford", "Endeavour", 2022)); 
-    rentalSystem.addCar(new SUV("Toyota ", "Fortuner", 2022)); 
-    rentalSystem.addCar(new SUV("Hyundai", "Creta", 2022)); 
-    rentalSystem.addCar(new SUV("KIA", "SELTOS", 2022)); 
-    rentalSystem.addCar(new LuxuryCar("Mercedes", "S-Class", 2022));
-    rentalSystem.addCar(new LuxuryCar("BMW", "7-Series", 2022));
-    rentalSystem.addCar(new LuxuryCar("Audi", "A-8", 2022));
-    
-    rentalSystem.addCar(new EconomyCar("SUZUKI", "SWIFT", 2022));
-    rentalSystem.addCar(new EconomyCar("SUZUKI", "WAGONR", 2022));
-    rentalSystem.addCar(new EconomyCar("HYUNDAI", "SANTRO", 2022));
-
-    cout << "Available Cars:\n";
-    rentalSystem.displayCars();
-
-    int seats, days;
-    cout << "Enter the number of seats you need: ";
-    cin >> seats;
-    cout << "Enter the number of days you want to rent: ";
-    cin >> days;
-
-    Car* rentedCar = rentalSystem.rentCar(seats, days);
-
-    if (rentedCar != nullptr) {
-        double totalCost = rentedCar->getDailyRate() * days;
-        cout << "Total Cost: $" << totalCost << "\n";
-    }
-
-    return 0;
-}
+In conclusion, Vroom Vroom is more than just a software project; it's a revolution in car rental services. By leveraging C++ and advanced OOP techniques, it has created a bridge between the digital world and the realm of vehicle rentals, delivering a sophisticated, user-centric, and transparent experience that aligns seamlessly with the needs and expectations of modern customers.
